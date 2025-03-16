@@ -1,11 +1,23 @@
 {% extends "base.html" %}
 
 <!-- load wagtailcore_tags by adding this: -->
-{% load wagtailcore_tags %}
+{% load wagtailcore_tags wagtailimages_tags %}
 
 {% block body_class %}template-homepage{% endblock %}
 
 <!-- replace everything below with: -->
 {% block content %}
-    {{ page.body|richtext }}
+
+    {% image self.banner_image fill-900x400 as img %}
+
+    <div class="p-5 mb-4 bg-light rounded-0" style="background-image: url('{{ img.url }}'); background-size: cover; color: dodgerblue;">
+        <div class="container-fluid py-5">
+        <h1 class="display-5 fw-bold">{{ self.banner_title }}</h1>
+        <div class="lead">{{ self.banner_subtitle|richtext }}</div>
+            {% if self.banner_cta %}
+                <a class="btn btn-primary btn-lg" href='#' role="button">@todo</a>
+            {% endif %}
+        </div>
+    </div>
+      
 {% endblock %}
