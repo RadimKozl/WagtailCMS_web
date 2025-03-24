@@ -1,14 +1,33 @@
 from django.db import models
 
-from wagtail.models import Page
+from modelcluster.fields import ParentalKey
+
+
+from wagtail.models import Page, Orderable
 from wagtail.fields import RichTextField
 from wagtail.admin.panels import FieldPanel, PageChooserPanel
+from wagtail.admin.panels import InlinePanel, MultiFieldPanel
 
-from wagtail.admin.panels import FieldPanel
+
 from wagtail.fields import StreamField
 
 from streams import blocks
 
+class HomePageCarouselImage(Orderable):
+    """Between 1 and 5 images for the home page carousel"""
+    id = models.BigAutoField(primary_key=True)
+    page = ParentalKey("home.HomePage", related_name="carousel_images")
+    carousel_image = models.ForeignKey(
+        'wagtailimages.Image',
+        null=True,
+        blank=False,
+        on_delete=models.SET_NULL,
+        related_name='+'
+    )
+    
+    panels = [
+        FieldPanel('carousel_image'),
+    ]
 
 class HomePage(Page):
     
@@ -49,10 +68,15 @@ class HomePage(Page):
     )
     
     content_panels = Page.content_panels + [
-        FieldPanel('banner_title'),
-        FieldPanel('banner_subtitle'),
-        FieldPanel('banner_image'),
-        PageChooserPanel('banner_cta'),
+        MultiFieldPanel([
+            FieldPanel('banner_title'),
+            FieldPanel('banner_subtitle'),
+            FieldPanel('banner_image'),
+            PageChooserPanel('banner_cta'),
+        ], heading="Banner Options"),
+        MultiFieldPanel([
+            InlinePanel("carousel_images", max_num=5, min_num=1, label="Image for Carousel"),
+        ], heading="Carousel Images"),
         FieldPanel('content'),
     ]
     
