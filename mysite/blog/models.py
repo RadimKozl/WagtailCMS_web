@@ -31,15 +31,30 @@ class BlogListingPage(RoutablePageMixin, Page):
         context = super().get_context(request, *args, **kwargs)
         # Get all BlogDetailPage instances
         context['posts'] = BlogDetailPage.objects.live().public().order_by('-first_published_at')
-        #context['a_special_link'] = self.reverse_subpage('latest_blog_posts')
+        #context['a_special_link'] = self.reverse_subpage('latest_posts')
         return context
     
-    @re_path(r'^latest/?$', name='latest_posts')
+    @re_path(r'^latest/$', name='latest_posts')
     def latest_blog_posts(self, request, *args, **kwargs):
         """Get latest blog posts."""
         context = self.get_context(request, *args, **kwargs)
         context['latest_posts'] = BlogDetailPage.objects.live().public()[:1]  # Get the latest post
         return render(request, 'blog/latest_posts.html', context)
+    
+    def get_sitemap_urls(self, request):
+        """Get sitemap urls."""
+        # Uncoment to have no sitemap for this page
+        # return []
+        sitemap = super().get_sitemap_urls(request)
+        sitemap.append(
+            {
+                'location': self.full_url + self.reverse_subpage('latest_posts'),
+                'lastmod': (self.last_published_at or self.latest_revision.created_at),
+                'priority': 0.9,
+            }
+        )
+        
+        return sitemap
 
     
     
