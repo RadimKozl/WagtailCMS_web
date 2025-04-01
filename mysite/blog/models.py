@@ -1,13 +1,16 @@
 """Blog listing and detail pages."""
 
 from django.db import models
+from django.shortcuts import render
+
 from wagtail.models import Page
 from wagtail.admin.panels import FieldPanel
 from wagtail.fields import StreamField
+from wagtail.contrib.routable_page.models import RoutablePageMixin, path, re_path
 
 from streams import blocks
 
-class BlogListingPage(Page):
+class BlogListingPage(RoutablePageMixin, Page):
     """Listing page lists all the Blog Deatail Pages"""
     
     template = "blog/blog_listing_page.html"
@@ -28,7 +31,17 @@ class BlogListingPage(Page):
         context = super().get_context(request, *args, **kwargs)
         # Get all BlogDetailPage instances
         context['posts'] = BlogDetailPage.objects.live().public().order_by('-first_published_at')
+        #context['a_special_link'] = self.reverse_subpage('latest_blog_posts')
         return context
+    
+    @re_path(r'^latest/?$', name='latest_posts')
+    def latest_blog_posts(self, request, *args, **kwargs):
+        """Get latest blog posts."""
+        context = self.get_context(request, *args, **kwargs)
+        context['latest_posts'] = BlogDetailPage.objects.live().public()[:1]  # Get the latest post
+        return render(request, 'blog/latest_posts.html', context)
+
+    
     
     
 class BlogDetailPage(Page):

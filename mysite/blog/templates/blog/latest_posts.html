@@ -1,16 +1,12 @@
 {% extends "base.html" %}
 
-{% load wagtailimages_tags wagtailroutablepage_tags %}
+{% load wagtailimages_tags %}
 
 {% block content %}
     <div class="container">
         <br />
-        <a href='{% routablepageurl page "latest_posts" %}' class="btn btn-primary" role="button">View Latest Post Only</a>
-        <!--<h2>Special link: {{ a_special_link }}</h2>-->
-    </div>
-
-    <div class="container">
-        {% for post in posts %}
+        <h1>Latest Posts</h1>
+        {% for post in latest_posts %}
             <br />
             <div class="row">
                 <div class="col-md-3">
