@@ -4,11 +4,51 @@ from django.db import models
 from django.shortcuts import render
 
 from wagtail.models import Page
-from wagtail.admin.panels import FieldPanel
+from wagtail.admin.panels import FieldPanel, MultiFieldPanel
 from wagtail.fields import StreamField
-from wagtail.contrib.routable_page.models import RoutablePageMixin, path, re_path
+from wagtail.contrib.routable_page.models import RoutablePageMixin, re_path
+from wagtail.snippets.models import register_snippet
 
 from streams import blocks
+
+class BlogAuthor(models.Model):
+    """Blog author for snippets."""
+    
+    name = models.CharField(max_length=100, blank=False, null=False)
+    website = models.URLField(blank=True, null=True)
+    image = models.ForeignKey(
+        'wagtailimages.Image',
+        null=True,
+        blank=False,
+        related_name='+',
+        on_delete=models.SET_NULL, 
+    )
+    
+    panels = [
+        MultiFieldPanel(
+            [
+                FieldPanel('name'),
+                FieldPanel('image'),
+            ],
+            heading="Name and Image",
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel('website'),
+            ],
+            heading="Links",
+        )
+    ]
+    def __str__(self):
+        """String repr of this class"""
+        return self.name
+    
+    class Meta:
+        """Meta class."""
+        verbose_name = "Blog Author"
+        verbose_name_plural = "Blog Authors"
+        
+register_snippet(BlogAuthor)
 
 class BlogListingPage(RoutablePageMixin, Page):
     """Listing page lists all the Blog Deatail Pages"""
@@ -32,6 +72,7 @@ class BlogListingPage(RoutablePageMixin, Page):
         # Get all BlogDetailPage instances
         context['posts'] = BlogDetailPage.objects.live().public().order_by('-first_published_at')
         #context['a_special_link'] = self.reverse_subpage('latest_posts')
+        context['authors'] = BlogAuthor.objects.all()
         return context
     
     @re_path(r'^latest/$', name='latest_posts')
@@ -55,9 +96,6 @@ class BlogListingPage(RoutablePageMixin, Page):
         )
         
         return sitemap
-
-    
-    
     
 class BlogDetailPage(Page):
     """Blog Detail Page"""
