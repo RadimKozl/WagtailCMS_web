@@ -1,9 +1,10 @@
 """Blog listing and detail pages."""
 
 from django.db import models
+from django import forms
 from django.shortcuts import render
 
-from modelcluster.fields import ParentalKey
+from modelcluster.fields import ParentalKey, ParentalManyToManyField
 
 from wagtail.models import Page, Orderable
 from wagtail.admin.panels import (
@@ -68,6 +69,34 @@ class BlogAuthor(models.Model):
         
 register_snippet(BlogAuthor)
 
+class BlogCategory(models.Model):
+    """Blog category for snippets."""
+    
+    name = models.CharField(max_length=255, blank=False, null=False)
+    slug = models.SlugField(
+        verbose_name = "Slug",
+        allow_unicode=True,
+        max_length = 255,
+        help_text="A slug to identify post by this category.",
+    )
+    
+    panels = [
+        FieldPanel('name'),
+        FieldPanel('slug'),
+    ]
+    
+    def __str__(self):
+        """String repr of this class"""
+        return self.name
+    
+    class Meta:
+        """Meta class."""
+        verbose_name = "Blog Category"
+        verbose_name_plural = "Blog Categories"
+        ordering = ['name']
+
+register_snippet(BlogCategory)
+
 class BlogListingPage(RoutablePageMixin, Page):
     """Listing page lists all the Blog Deatail Pages"""
     
@@ -90,6 +119,7 @@ class BlogListingPage(RoutablePageMixin, Page):
         # Get all BlogDetailPage instances
         context['posts'] = BlogDetailPage.objects.live().public().order_by('-first_published_at')
         #context['a_special_link'] = self.reverse_subpage('latest_posts')
+        context["categories"] = BlogCategory.objects.all()
         context['authors'] = BlogAuthor.objects.all()
         return context
     
@@ -135,6 +165,12 @@ class BlogDetailPage(Page):
         on_delete=models.SET_NULL, 
     )
     
+    categories = ParentalManyToManyField(
+        'blog.BlogCategory',
+        blank=True,
+        related_name='blog_categories',
+    )
+    
     content = StreamField(
         [
             ("title_and_text", blocks.TitleAndTextBlock()),
@@ -155,6 +191,12 @@ class BlogDetailPage(Page):
                 InlinePanel('blog_authors', label="Author", min_num=1, max_num=4),
             ],
             heading="Author(s)",
+        ),
+        MultiFieldPanel(
+            [
+                FieldPanel("categories", widget=forms.CheckboxSelectMultiple),
+            ],
+            heading="Categories",
         ),
         FieldPanel('content'),
     ]

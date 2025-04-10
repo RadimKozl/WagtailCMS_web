@@ -7,6 +7,20 @@
         <br />
         <a href='{% routablepageurl page "latest_posts" %}' class="btn btn-primary" role="button">View Latest Post Only</a>
         <!--<h2>Special link: {{ a_special_link }}</h2>-->
+
+        <div class="container">
+            <h2>Categories</h2>
+            <ul>
+                {% for cat in categories %}
+                    <li>
+                        <a href="?category={{ cat.slug }}" class="btn btn-outline-secondary btn-sm">
+                            {{ cat.name }}
+                        </a>
+                    </li>
+                {% endfor %}
+            </ul>
+        </div>
+
     </div>
 
     <div class="container">
