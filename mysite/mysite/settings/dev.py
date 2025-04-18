@@ -22,7 +22,8 @@ EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"
 
 if DEBUG and not TESTING:
     INSTALLED_APPS = INSTALLED_APPS + [
-        "debug_toolbar"
+        "debug_toolbar",
+        "django_extensions",
     ]
 
     MIDDLEWARE = MIDDLEWARE + [
