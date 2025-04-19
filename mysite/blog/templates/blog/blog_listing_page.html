@@ -28,7 +28,7 @@
             <br />
             <div class="row">
                 <div class="col-md-3">
-                    {% image post.blog_image fill-250x250 as blog_image %}
+                    {% image post.banner_image fill-250x250 as blog_image %}
                     <a href="{{ post.url }}">
                         <img src="{{ blog_image.url }}" alt="{{ blog_image.alt }}">
                     </a>
@@ -38,6 +38,9 @@
                         <h2>
                             {{ post.custom_title }}
                         </h2>
+                        {% if post.specific.subtitle %}
+                            <p>{{ post.specific.subtitle }}</p>
+                        {% endif %}
                     </a>
                 </div>
             </div>
