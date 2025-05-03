@@ -37,6 +37,9 @@ class CardBlock(blocks.StructBlock):
 class RichTextBlock(blocks.RichTextBlock):
     """Richtext with all the features."""
     
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs, features=['h1', 'h2', 'h3', 'bold', 'italic', 'ol', 'ul', 'hr', 'link', 'document-link', 'image', 'embed', 'code', 'center', 'mark'])
+    
     class Meta:  #noqa
         template = "streams/rich_text_block.html"
         icon = "doc-full"
