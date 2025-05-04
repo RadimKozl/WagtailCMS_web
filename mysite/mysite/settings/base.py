@@ -46,6 +46,7 @@ INSTALLED_APPS = [
     "wagtail.images",
     "wagtail.search",
     "wagtail.admin",
+    "wagtailcaptcha",
     "wagtail",
     "modelcluster",
     "taggit",
@@ -56,6 +57,8 @@ INSTALLED_APPS = [
     "django.contrib.messages",
     "django.contrib.staticfiles",
     "django.contrib.sitemaps",
+    "django_recaptcha",
+
 ]
 
 MIDDLEWARE = [
@@ -196,3 +199,23 @@ WAGTAILADMIN_BASE_URL = "http://example.com"
 WAGTAILDOCS_EXTENSIONS = ['csv', 'docx', 'key', 'odt', 'pdf', 'pptx', 'rtf', 'txt', 'xlsx', 'zip']
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
+
+# Recaptcha settings
+SILENCED_SYSTEM_CHECKS = ['django_recaptcha.recaptcha_test_key_error'] # for production delete this line
+
+# For production set
+# RECAPTCHA_PUBLIC_KEY = os.environ.get("RECAPTCHA_PUBLIC_KEY")
+# RECAPTCHA_PRIVATE_KEY = os.environ.get("RECAPTCHA_PRIVATE_KEY")
+# NOCAPTCHA = os.environ.get("NOCAPTCHA") 
+
+# Try to load local settings if they exist
+try:
+    from .local_settings import RECAPTCHA_PUBLIC_KEY as LOCAL_PUBLIC_KEY, RECAPTCHA_PRIVATE_KEY as LOCAL_PRIVATE_KEY, NOCAPTCHA as LOCAL_NOCAPTCHA
+    RECAPTCHA_PUBLIC_KEY = LOCAL_PUBLIC_KEY
+    RECAPTCHA_PRIVATE_KEY = LOCAL_PRIVATE_KEY
+    NOCAPTCHA = LOCAL_NOCAPTCHA
+except ImportError:
+    pass
+
+
+
