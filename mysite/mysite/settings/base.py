@@ -48,6 +48,7 @@ INSTALLED_APPS = [
     "wagtail.admin",
     "wagtailcaptcha",
     "wagtail",
+    "wagtail.api.v2",
     "modelcluster",
     "taggit",
     "django.contrib.admin",
@@ -58,6 +59,8 @@ INSTALLED_APPS = [
     "django.contrib.staticfiles",
     "django.contrib.sitemaps",
     "django_recaptcha",
+    
+    "rest_framework",
 
 ]
 
