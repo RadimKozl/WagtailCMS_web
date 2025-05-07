@@ -35,6 +35,13 @@ if DEBUG and not TESTING:
         "127.17.0.1", # docker	
     ]
     
+    CACHES = {
+        "default": {
+            "BACKEND": "django.core.cache.backends.filebased.FileBasedCache",
+            "LOCATION": "C:\\Users\\kozl\\ITProjects\\WagtailCMS_web\\mysite\\cache",
+        }
+    }
+    
 try:
     from .local import *
 except ImportError:
