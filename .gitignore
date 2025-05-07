@@ -175,3 +175,9 @@ cython_debug/
 
 # Secret keys
 local_settings.py
+
+# Cache files
+*.cache
+*.djcache
+
+
