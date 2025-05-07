@@ -1,6 +1,9 @@
 """Menus models."""
 from django.db import models
 
+from django.core.cache import cache
+from django.core.cache.utils import make_template_fragment_key
+
 from django_extensions.db.fields import AutoSlugField
 
 from modelcluster.models import ClusterableModel
@@ -83,6 +86,16 @@ class Menu(ClusterableModel):
         ), 
         InlinePanel("menu_items", label="Menu Items"),
     ]
+    
+    def save(self, *args, **kwargs):
+        """Create a template fragment key for this page.
+        Then delete  the key from the cache."""
+        # Clear the cache for this page
+        key = make_template_fragment_key(
+            "navigation",
+        )
+        cache.delete(key)
+        return super().save(*args, **kwargs)
     
     def __str__(self):
         return self.title

@@ -1,6 +1,8 @@
 """Blog listing and detail pages."""
 
 from django.db import models
+from django.core.cache import cache
+from django.core.cache.utils import make_template_fragment_key
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django import forms
 from django.shortcuts import render
@@ -212,6 +214,19 @@ class BlogDetailPage(Page):
         ),
         FieldPanel('content'),
     ]
+    
+    def save(self, *args, **kwargs):
+        """Create a template fragment key for this page.
+        Then delete  the key from the cache."""
+        # Clear the cache for this page
+        key = make_template_fragment_key(
+            "blog_post_preview",
+            [self.id]
+        )
+        cache.delete(key)
+        return super().save(*args, **kwargs)
+
+
     
 # First subclassed blog post page
 class ArticleBlogPage(BlogDetailPage):
