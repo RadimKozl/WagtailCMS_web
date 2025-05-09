@@ -22,6 +22,22 @@ from wagtail.snippets.models import register_snippet
 
 from streams import blocks
 
+from rest_framework.fields import Field
+
+class ImageSerializedField(Field):
+    """A custom serializer used in Wagtails v2 API."""
+    
+    def to_representation(self, value):
+        """Return the image URL, title and dimensions."""
+        if value:
+            return {
+                "url": value.file.url,
+                "title": value.title,
+                "width": value.width,
+                "height": value.height,
+            }
+        return None
+    
 class BlogAuthorsOrderable(Orderable):
     """This allow us to select one or more authors from Snippets."""
     page = ParentalKey("blog.BlogDetailPage", related_name="blog_authors")
@@ -44,11 +60,16 @@ class BlogAuthorsOrderable(Orderable):
         """Get the website of the author."""
         return self.author.website
     
+    @property
+    def author_image(self):
+        """Get the image of the author."""
+        return self.author.image
+    
     api_fields = [
         #APIField('author'),
         APIField('author_name'),
         APIField('author_website'),
-        
+        APIField('author_image', serializer=ImageSerializedField()),
     ]
 
 class BlogAuthor(models.Model):
