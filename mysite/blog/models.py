@@ -9,6 +9,7 @@ from django.shortcuts import render
 
 from modelcluster.fields import ParentalKey, ParentalManyToManyField
 
+from wagtail.api import APIField
 from wagtail.models import Page, Orderable
 from wagtail.admin.panels import (
     FieldPanel, 
@@ -31,6 +32,23 @@ class BlogAuthorsOrderable(Orderable):
     
     panels = [
         FieldPanel('author'),
+    ]
+    
+    @property
+    def author_name(self):
+        """Get the name of the author."""
+        return self.author.name
+    
+    @property
+    def author_website(self):
+        """Get the website of the author."""
+        return self.author.website
+    
+    api_fields = [
+        #APIField('author'),
+        APIField('author_name'),
+        APIField('author_website'),
+        
     ]
 
 class BlogAuthor(models.Model):
@@ -61,6 +79,8 @@ class BlogAuthor(models.Model):
             heading="Links",
         )
     ]
+    
+    
     def __str__(self):
         """String repr of this class"""
         return self.name
@@ -213,6 +233,11 @@ class BlogDetailPage(Page):
             heading="Categories",
         ),
         FieldPanel('content'),
+    ]
+    
+    api_fields = [
+        APIField('blog_authors'),
+        APIField('content'),
     ]
     
     def save(self, *args, **kwargs):
