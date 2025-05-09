@@ -17,6 +17,7 @@ from wagtail.admin.panels import (
     InlinePanel
 )
 from wagtail.fields import StreamField
+from wagtail.images.api.fields import ImageRenditionField
 from wagtail.contrib.routable_page.models import RoutablePageMixin, re_path
 from wagtail.snippets.models import register_snippet
 
@@ -69,7 +70,8 @@ class BlogAuthorsOrderable(Orderable):
         #APIField('author'),
         APIField('author_name'),
         APIField('author_website'),
-        APIField('author_image', serializer=ImageSerializedField()),
+        #APIField('author_image', serializer=ImageSerializedField()),
+        APIField('image_of_author', serializer=ImageRenditionField('fill-200x250', source="author_image")),
     ]
 
 class BlogAuthor(models.Model):
