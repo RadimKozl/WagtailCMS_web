@@ -3,7 +3,7 @@ from django.shortcuts import render
 
 from modelcluster.fields import ParentalKey
 
-
+from wagtail.api import APIField
 from wagtail.models import Page, Orderable
 from wagtail.fields import RichTextField
 from wagtail.admin.panels import FieldPanel, PageChooserPanel
@@ -68,6 +68,14 @@ class HomePage(RoutablePageMixin, Page):
         null=True,
         blank=True
     )
+    
+    api_fields = [
+        APIField('banner_title'),
+        APIField('banner_subtitle'),
+        APIField('banner_image'),
+        APIField('banner_cta'),
+        APIField('content'),
+    ]
     
     content_panels = Page.content_panels + [
         MultiFieldPanel([
