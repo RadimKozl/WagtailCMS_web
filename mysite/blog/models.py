@@ -147,6 +147,7 @@ class BlogListingPage(RoutablePageMixin, Page):
     """Listing page lists all the Blog Deatail Pages"""
     
     template = "blog/blog_listing_page.html"
+    ajax_template = "blog/blog_listing_page_ajax.html"
     max_count = 1
     subpage_types = ['blog.BlogDetailPage','blog.ArticleBlogPage','blog.VideoBlogPage']
 
