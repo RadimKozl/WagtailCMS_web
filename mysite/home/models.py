@@ -36,8 +36,18 @@ class HomePageCarouselImage(Orderable):
     ]
 
 class HomePage(RoutablePageMixin, Page):
+    """Home page model"""
     
-    max_count = 1
+    template = "home/home_page.html"
+    subpage_types = [
+        'blog.BlogListingPage',
+        'contact.ContactPage',
+        'flex.Flex',
+    ]
+    
+    parent_page_types = ['wagtailcore.Page']
+    
+    # max_count = 1
     
     banner_title = models.CharField(
         max_length=100, 

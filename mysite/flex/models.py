@@ -10,6 +10,9 @@ from streams import blocks
 class Flex(Page):
     """Flexible page class."""
     template = "flex/flex_page.html"
+    
+    subpage_types = ['flex.Flex', 'contact.ContactPage']
+    parent_page_types = ['flex.Flex', 'home.HomePage']
 
     content = StreamField(
         [
